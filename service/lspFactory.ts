@@ -1,39 +1,46 @@
 import {
-  LSPFactory,
+    LSPFactory,
 } from '@lukso/lsp-factory.js';
 import Web3 from 'web3';
 
-import { CHAIN_ID, RPC_URL } from '../globals';
+import {CHAIN_ID, RPC_URL} from '../globals';
 
-export const deployUp = async (web3: Web3, controllerAddress: string, deployKey: string) => {
-  const provider = RPC_URL; // RPC url used to connect to the network
-  const chainId = CHAIN_ID; // Chain Id of the network you want to connect to
+export const deployUp = async (web3: Web3, body) => {
+    const provider = RPC_URL;
+    const chainId = CHAIN_ID;
 
-  const lspFactory = new LSPFactory(provider, {
-    deployKey,
-    chainId,
-  });
+    const controllerAddress = body.address
+    const privateKey = body.privateKey as string
 
-  console.log('🚀 Deploying LSP3UniversalProfile contract...');
-  const deployedContracts = await lspFactory.LSP3UniversalProfile.deploy({
-    controllingAccounts: [controllerAddress], // our key will be controlling our UP in the beginning
-    lsp3Profile: {
-      name: 'New universal profile',
-      description: 'My Cool Universal Profile test',
-      //   profileImage: [fileBlob], // got some Image uploaded?
-      backgroundImage: [],
-      tags: ['Public Profile'],
-      links: [
-        {
-          title: 'My Website',
-          url: 'http://my-website.com',
+    console.log("privateKey: ", privateKey)
+    console.log("controllerAddress: ", controllerAddress)
+
+
+    const lspFactory = new LSPFactory(provider, privateKey);
+
+    const deployedContracts = await lspFactory.LSP3UniversalProfile.deploy({
+        controllingAccounts: [controllerAddress],
+        lsp3Profile: {
+            name: body.name,
+            description: body.description,
+            //   profileImage: [fileBlob], // got some Image uploaded?
+            backgroundImage: [],
+            tags: ['Public Profile'],
+            links: [
+                {
+                    title: 'My Website',
+                    url: 'http://my-website.com',
+                },
+            ],
         },
-      ],
-    },
-  });
+    });
 
-  console.log(`✅ Deployment and configuration successful`);
-  console.log('Contracts:', deployedContracts);
+    console.log(`✅ Deployment and configuration successful`);
+    console.log('Contracts:', deployedContracts);
 
-  return deployedContracts.ERC725Account.address;
+    return {
+        upAddress: deployedContracts.ERC725Account.address,
+        address: controllerAddress,
+        privateKey: privateKey
+    }
 };

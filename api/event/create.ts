@@ -1,5 +1,5 @@
 import { NowRequest, NowResponse } from "@vercel/node";
-import {createEvent} from "../../service/event_service_relayer";
+import {createEvent} from "../../service/event_service_nft";
 
 export default async (req: NowRequest, res: NowResponse) => {
     const { body } = req;
