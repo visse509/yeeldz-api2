@@ -5,7 +5,7 @@ export const CHAIN_ID = 22;
 export const RELAYER_URL = 'https://relayer.lukso.network/api/v1/execute'
 
 
-export const eventStoreHash = '0x12E5F227962AaB11cCe58A83c9FF1963694F3496'
+export const eventStoreHash = '0x40ffAca1A9093ED0472aCAF4662bBE0D7D1E8139'
 export const eventStoreAbi = [
     {
         "inputs": [
