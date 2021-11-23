@@ -4,6 +4,15 @@ import {
 import Web3 from 'web3';
 
 import {CHAIN_ID, RPC_URL} from '../globals';
+import * as fs from "fs";
+import {Blob} from 'node:buffer';
+
+function blobToFile(theBlob, fileName) {
+    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+    theBlob.lastModifiedDate = new Date();
+    theBlob.name = fileName;
+    return theBlob;
+}
 
 export const deployUp = async (web3: Web3, body) => {
     const provider = RPC_URL;
@@ -12,9 +21,12 @@ export const deployUp = async (web3: Web3, body) => {
     const controllerAddress = body.address
     const privateKey = body.privateKey as string
 
-    console.log("privateKey: ", privateKey)
-    console.log("controllerAddress: ", controllerAddress)
-
+    let imgFile;
+    try {
+        imgFile = fs.readFileSync(body.img)
+    } catch (err) {
+        console.log(err)
+    }
 
     const lspFactory = new LSPFactory(provider, privateKey);
 
@@ -23,8 +35,8 @@ export const deployUp = async (web3: Web3, body) => {
         lsp3Profile: {
             name: body.name,
             description: body.description,
-            //   profileImage: [fileBlob], // got some Image uploaded?
-            backgroundImage: [],
+            profileImage: [imgFile], // got some Image uploaded?
+            backgroundImage: [imgFile],
             tags: ['Public Profile'],
             links: [
                 {
@@ -34,9 +46,6 @@ export const deployUp = async (web3: Web3, body) => {
             ],
         },
     });
-
-    console.log(`✅ Deployment and configuration successful`);
-    console.log('Contracts:', deployedContracts);
 
     return {
         upAddress: deployedContracts.ERC725Account.address,

@@ -4,7 +4,8 @@ export const RPC_URL = 'https://rpc.l14.lukso.network';
 export const CHAIN_ID = 22;
 export const RELAYER_URL = 'https://relayer.lukso.network/api/v1/execute'
 
-export const eventStoreHash = '0xB275309ac89dfEe4a15B0b69238E9825Cfca5cAA'
+
+export const eventStoreHash = '0x12E5F227962AaB11cCe58A83c9FF1963694F3496'
 export const eventStoreAbi = [
     {
         "inputs": [

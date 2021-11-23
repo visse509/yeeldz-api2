@@ -76,7 +76,7 @@ async function addToTicketStore(controllerAddress, privateKey, eventAddress) {
             to: eventStore.options.address,
             from: controllerAddress,
             data,
-            gas: gas,
+            gas: gas*4,
             gasPrice,
             nonce,
             chainId: CHAIN_ID
@@ -112,8 +112,8 @@ export const getEvents = async () => {
         result.push({
             eventId,
             ticketBought: eventData['0'],
-            ticketTotal: eventData['1'],
-            ticketCost: eventData['2'],
+            ticketCost: eventData['1'],
+            ticketTotal: eventData['2'],
             eventName: eventData['3'],
             description: eventData['4'],
             location: eventData['5'],
@@ -135,8 +135,8 @@ export const getEventData = async (eventAddress) => {
     return {
         eventAddress,
         ticketBought: eventData['0'],
-        ticketTotal: eventData['1'],
-        ticketCost: eventData['2'],
+        ticketCost: eventData['1'],
+        ticketTotal: eventData['2'],
         eventName: eventData['3'],
         description: eventData['4'],
         location: eventData['5'],

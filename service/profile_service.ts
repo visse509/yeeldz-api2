@@ -1,6 +1,7 @@
 import { ERC725, ERC725JSONSchema } from '@erc725/erc725.js';
 import Web3 from 'web3';
 import { RPC_URL } from '../globals';
+import {Blob} from "node:buffer";
 
 export const getProfileData = async (erc725ContractAddress: string) => {
     // Part of LSP3-UniversalProfile Schema
@@ -37,11 +38,19 @@ export const getProfileData = async (erc725ContractAddress: string) => {
 
     const erc725 = new ERC725(schema, erc725ContractAddress, provider, config);
 
-    console.log(erc725)
-
     const data = await erc725.fetchData()
 
-    console.log(data);
-
-    return data;
+    return {
+        profileName: data.LSP3Profile.LSP3Profile.name,
+        profileDescription: data.LSP3Profile.LSP3Profile.description,
+        profileImg: arrayBufferToBase64(data.LSP3Profile.LSP3Profile.profileImage[0].data)
+    };
 };
+
+function arrayBufferToBase64(buffer) {
+    var binary = '';
+    var bytes = [].slice.call(new Uint8Array(buffer));
+    bytes.forEach((b) => binary += String.fromCharCode(b));
+    return binary
+};
+
