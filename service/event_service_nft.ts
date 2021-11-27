@@ -2,6 +2,7 @@ import Web3 from 'web3'
 import {CHAIN_ID, RPC_URL, eventStoreHash, eventStoreAbi} from "../globals";
 import {abi, readByteCodeFile} from "../events_contract"
 import * as crypto from "crypto";
+import {getSaleableTickets} from "./ticket_service_nft";
 
 const web3 = new Web3(RPC_URL)
 
@@ -109,6 +110,7 @@ export const getEvents = async () => {
             eventId
         );
         const eventData = await eventsContract.methods.getEventData().call()
+        const saleableTickets = await getSaleableTickets(eventId)
         result.push({
             eventId,
             ticketBought: eventData['0'],
@@ -118,7 +120,8 @@ export const getEvents = async () => {
             description: eventData['4'],
             location: eventData['5'],
             date: eventData['6'],
-            img: eventData['7']
+            img: eventData['7'],
+            ticketsMarket: saleableTickets
         })
         console.log("data for eventId", eventId, eventData)
     }

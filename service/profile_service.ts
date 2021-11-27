@@ -39,7 +39,7 @@ export const getProfileData = async (erc725ContractAddress: string) => {
     const erc725 = new ERC725(schema, erc725ContractAddress, provider, config);
 
     const data = await erc725.fetchData()
-
+    console.log(data)
     return {
         profileName: data.LSP3Profile.LSP3Profile.name,
         profileDescription: data.LSP3Profile.LSP3Profile.description,

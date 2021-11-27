@@ -19,13 +19,15 @@ export default async (req: NowRequest, res: NowResponse) => {
     form.parse(req, async function (err, fields, files) {
         console.log(fields)
         let oldPath = files.img.filepath;
-        let newPath = './images/' + files.img.originalFilename;
-        await fs.rename(oldPath, newPath, function (err) {
-            if (err) throw err;
-        });
+        let imgFile;
+        try {
+            imgFile = fs.readFileSync(oldPath)
+        } catch (err) {
+            console.log(err)
+        }
+
         body = {...fields};
-        body.img = newPath;
-        const profileData = await deployUp(web3, body)
+        const profileData = await deployUp(web3, body, imgFile)
         return res.json(profileData)
     })
 };
