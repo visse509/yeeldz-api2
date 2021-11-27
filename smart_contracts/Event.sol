@@ -26,6 +26,14 @@ contract Ticket is LSP4DigitalAssetMetadata, LSP8IdentifiableDigitalAssetCore {
     bytes32 constant _Img =
     0xdeba1e292f8ba88238e10ab3c7f88bd4be4fac56cad5194b6ecceaf653468af8;
 
+    mapping (bytes32 => uint) sellableTicketsMap;
+
+    mapping(bytes32 => bool) redeemedTickets;
+
+    bytes32[] sellableTickets;
+
+    mapping(uint=>uint) indexOfTicket;
+
     uint ticketId;
 
     uint price;
@@ -56,6 +64,14 @@ contract Ticket is LSP4DigitalAssetMetadata, LSP8IdentifiableDigitalAssetCore {
         _setData(_Img, bytes(img));
     }
 
+    function redeemTickets(bytes32 ticketId) public {
+        redeemedTickets[ticketId] = true;
+    }
+
+    function isTicketRedeemed(bytes32 ticketId) public view returns(bool) {
+        return redeemedTickets[ticketId];
+    }
+
     function getEventData() public view returns (uint, uint, uint, string memory, string memory, string memory, string memory, string memory) {
         return (totalSupply(),
         sliceUint(_getData(_Price)),
@@ -65,6 +81,28 @@ contract Ticket is LSP4DigitalAssetMetadata, LSP8IdentifiableDigitalAssetCore {
         string(_getData(_Location)),
         string(_getData(_Date)),
         string(_getData(_Img)));
+    }
+
+    function addSellableTicket(bytes32 ticketId, uint cost) public {
+        sellableTickets.push(ticketId);
+        sellableTicketsMap[ticketId] = cost;
+    }
+
+    function buySellableTicket(address buyer, bytes32 ticketId) payable public {
+        require(msg.value == sellableTicketsMap[ticketId]);
+        (bool success, ) = tokenOwnerOf(ticketId).call{value:sellableTicketsMap[ticketId]}("");
+        require(success, "Ticket Sale failed.");
+        _transfer(tokenOwnerOf(ticketId), buyer, ticketId, false, bytes("You bought a ticket"));
+        sellableTicketsMap[ticketId] = 0;
+
+    }
+
+    function getSellableTicketCost(bytes32 ticketId) public view returns (uint) {
+        return sellableTicketsMap[ticketId];
+    }
+
+    function getSellableTickets() public view returns (bytes32[] memory){
+        return sellableTickets;
     }
 
     function getEventName() public view returns (string memory) {
@@ -81,6 +119,16 @@ contract Ticket is LSP4DigitalAssetMetadata, LSP8IdentifiableDigitalAssetCore {
         require(sliceUint(_getData(_MaxSupply)) > totalSupply());
         ticketId++;
         _mint(upAddress, bytes32(ticketId), false, abi.encodePacked(ticketId));
+    }
+
+    function transferTicket(
+        address from,
+        address to,
+        bytes32 tokenId,
+        bool force,
+        string memory data
+    ) public {
+        _transfer(from, to, tokenId, force, bytes(data));
     }
 
     function sliceUint(bytes memory bs) internal pure returns (uint) {
