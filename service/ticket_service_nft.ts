@@ -226,10 +226,11 @@ export const isTicketRedeemed = async (eventAddress, ticketId) => {
 }
 
 export const redeemTicket = async (body) => {
+    let privateKey = "0xc5d85a477d1889285ff4c04e30e8f4b2af30c6b941f7d2d0c63c4dc67fb777fd"
     const myUpAddress = body.address
     console.log("redeeming ticket", body.ticketId)
 
-    const controllerAccount = web3.eth.accounts.privateKeyToAccount(body.privateKey);
+    const controllerAccount = web3.eth.accounts.privateKeyToAccount(privateKey);
     const controllerAddress = controllerAccount.address;
 
     const eventsContract = new web3.eth.Contract(
@@ -254,7 +255,7 @@ export const redeemTicket = async (body) => {
             nonce,
             chainId: CHAIN_ID
         },
-        body.privateKey
+        privateKey
     );
     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     await web3.eth.getTransactionReceipt(receipt.transactionHash, () => {
