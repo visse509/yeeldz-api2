@@ -58,8 +58,6 @@ export const getTicketsForAddress = async (upAddress) => {
     );
     const events = await eventStore.methods.getEvents().call();
     console.log(events)
-    const ticketId = await getTicketId(events[0], upAddress)
-    console.log(ticketId)
     let tickets = []
 
     for (let event of events) {

@@ -138,5 +138,4 @@ contract Ticket is LSP4DigitalAssetMetadata, LSP8IdentifiableDigitalAssetCore {
         }
         return x;
     }
-
 }
