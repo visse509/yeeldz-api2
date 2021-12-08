@@ -34,8 +34,6 @@ The front end of the project is totally custom and built in Svelte v3 with the b
 
 ## Yeeldz Api Server
 
-Please see https://github.com/vexkiddy/yeeldz for more details
-
 The api does all the communication to the Lukso network.
 1. Creating profile, getting profile data
 2. Creating event, getting all events with data
